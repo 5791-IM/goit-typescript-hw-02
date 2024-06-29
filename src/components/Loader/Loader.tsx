@@ -1,7 +1,8 @@
 // src/components/Loader/Loader.jsx
+import { FC } from "react";
 import { DNA } from "react-loader-spinner";
 
-const Loader = () => {
+const Loader: FC = () => {
   return (
     <DNA
       visible={true}

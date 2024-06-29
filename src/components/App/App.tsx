@@ -4,29 +4,29 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import ImageModal from "../ImageModal/ImageModal";
-import { useEffect, useRef, useState } from "react";
-import getImages from "../../Photo-api";
+import { FC, useEffect, useRef, useState } from "react";
+import getImages, { ApiImage } from "../../Photo-api";
 import toast, { Toaster } from "react-hot-toast";
 import Modal from "react-modal";
 import css from "./App.module.css";
 
 Modal.setAppElement("#root");
 
-const App = () => {
-  const [images, setImages] = useState([]);
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const bottomRef = useRef(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+const App: FC = () => {
+  const [images, setImages] = useState<ApiImage[]>([]);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ApiImage | null>(null);
   // const [modalIsOpen, setIsOpen] = useState(false);
 
-  const onSubmit = (query) => {
+  const onSubmit = (query: string) => {
     setPage(1);
     setImages([]);
-
     setSearchQuery(query);
+
     if (query === "") return toast.error("Write something to start searching");
   };
 
@@ -41,7 +41,7 @@ const App = () => {
         setIsError(false);
         const data = await getImages(searchQuery, page);
         setImages((prevState) => [...prevState, ...data]);
-        if (page > 1) {
+        if (page > 1 && bottomRef.current) {
           bottomRef.current.scrollIntoView({ behavior: "smooth" });
         }
       } catch (error) {
@@ -58,7 +58,7 @@ const App = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const openModal = (image) => {
+  const openModal = (image: ApiImage) => {
     setSelectedImage(image);
   };
 
